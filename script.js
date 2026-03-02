@@ -254,3 +254,32 @@ document.querySelectorAll(".skill-box").forEach(box => {
         box.appendChild(img);
     }
 });
+const secretCode = ["arrowup","arrowup","arrowdown","arrowdown","arrowleft","arrowright","arrowleft","arrowright","b","a"];// customize this
+let inputBuffer = [];
+
+document.addEventListener("keydown", (event) => {
+    inputBuffer.push(event.key.toLowerCase());
+    if (inputBuffer.length > secretCode.length) inputBuffer.shift();
+
+    if (secretCode.every((val, i) => val === inputBuffer[i])) {
+        const popup = document.getElementById("secret-popup");
+        popup.classList.add("show");
+
+        // allow transition to play by forcing layout
+        void popup.offsetWidth;
+    }
+});
+const skillBoxes = document.querySelectorAll('.skill-box');
+
+const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            observer.unobserve(entry.target);  // Stop observing once the element is visible
+        }
+    });
+}, { threshold: 0.5 });
+
+skillBoxes.forEach(box => {
+    observer.observe(box);
+});
